@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#  TRUTHSEEKER
+#  
+#  Copyright 2022 Panda <panda@PANDA>
+#  
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+
+try:
+	from urllib.request import Request, urlopen, urlretrieve
+	from bs4 import BeautifulSoup
+	import socket
+	from os import system
+	from requests import get
+	import socket
+	import readline
+	import pyfiglet
+	from signal import signal, SIGPIPE, SIG_DFL 
+	#Ignore SIG_PIPE and don't throw exceptions on it... (http://docs.python.org/library/signal.html)
+	signal(SIGPIPE,SIG_DFL) 
+except ImportError:
+	print("asd")
+
+a019_name = socket.gethostname()
+a019_ip = get('https://api.ipify.org').text
+a019_mode = "normal"
+last_Update_date = "Thu May 12"
+last_Update_time = "1:12 PM"
+d_ver = "1.0.8"
+release_mode = "DEVELOPER"
+line_ind = 1;
+
+# GET UPDATE FROM WEBSITE (require: SentroMonitor)
+try:
+	s = socket.socket()
+	host = "0.0.0.0"
+	port = 3389
+	s.bind((host, port))
+except OSError:
+	print("Truthseeker running or port " + str(port) + " already in use.")
+	exit()
+
+def clearScreen():
+	system("clear");
+
+def genLeech():
+	with open('Leech.php', 'w') as f:
+		f.write("""<?php 
+	# Version: 1.2.4 | developer: surelle-ha
+	# Usage: updateServer("Text Here", 1);
+	# Output: [STABLE]   ::1 -> [06-05-22 07:17:40] 'GET CGI/1.1 Apache/2.4.53 (Unix) PHP/8.1.5 HTTP/1.1 /UtilityAPI/SentroMonitor.php' Text Here -> ::1 <localhost>
+	# Usage: updateServer("Message12", 2);
+	# Output: [WARNING]  ::1 -> [06-05-22 07:17:40] 'GET CGI/1.1 Apache/2.4.53 (Unix) PHP/8.1.5 HTTP/1.1 /UtilityAPI/SentroMonitor.php' Message12 -> ::1 <localhost>
+	# Usage: updateServer("Mail12345", 3);
+	# Output: [CRITICAL] ::1 -> [06-05-22 07:17:40] 'GET CGI/1.1 Apache/2.4.53 (Unix) PHP/8.1.5 HTTP/1.1 /UtilityAPI/SentroMonitor.php' Mail12345 -> ::1 <localhost>
+	
+	date_default_timezone_set('Asia/Manila');
+	
+	function updateServer($updateText, $updateMark){
+		$host    = "127.0.0.1"; // Change Server Host
+		$port    = 3389; // Change Server Port
+		if($updateMark == 1){
+			$message = "[STABLE]   ".$_SERVER['REMOTE_ADDR']." -> [".date('d-m-y h:i:s')."] '".$_SERVER['REQUEST_METHOD']." ".$_SERVER['GATEWAY_INTERFACE']." ".$_SERVER['SERVER_SOFTWARE']." ".$_SERVER['SERVER_PROTOCOL']." ".$_SERVER['REQUEST_URI']."' ".$updateText." -> ".$_SERVER['SERVER_ADDR']." <".$_SERVER['SERVER_NAME'].">";
+		}else if($updateMark == 2){
+			$message = "[WARNING]  ".$_SERVER['REMOTE_ADDR']." -> [".date('d-m-y h:i:s')."] '".$_SERVER['REQUEST_METHOD']." ".$_SERVER['GATEWAY_INTERFACE']." ".$_SERVER['SERVER_SOFTWARE']." ".$_SERVER['SERVER_PROTOCOL']." ".$_SERVER['REQUEST_URI']."' ".$updateText." -> ".$_SERVER['SERVER_ADDR']." <".$_SERVER['SERVER_NAME'].">";
+		}else if($updateMark == 3){
+			$message = "[CRITICAL] ".$_SERVER['REMOTE_ADDR']." -> [".date('d-m-y h:i:s')."] '".$_SERVER['REQUEST_METHOD']." ".$_SERVER['GATEWAY_INTERFACE']." ".$_SERVER['SERVER_SOFTWARE']." ".$_SERVER['SERVER_PROTOCOL']." ".$_SERVER['REQUEST_URI']."' ".$updateText." -> ".$_SERVER['SERVER_ADDR']." <".$_SERVER['SERVER_NAME'].">";
+		}else if($updateMark == 4){
+			$message = "[ADMIN]    ".$_SERVER['REMOTE_ADDR']." -> [".date('d-m-y h:i:s')."] '".$_SERVER['REQUEST_METHOD']." ".$_SERVER['GATEWAY_INTERFACE']." ".$_SERVER['SERVER_SOFTWARE']." ".$_SERVER['SERVER_PROTOCOL']." ".$_SERVER['REQUEST_URI']."' ".$updateText." -> ".$_SERVER['SERVER_ADDR']." <".$_SERVER['SERVER_NAME'].">";
+		}else if($updateMark == 0){
+			$message = $updateText;
+		}
+		$socket = socket_create(AF_INET, SOCK_STREAM, 0);
+		$result = socket_connect($socket, $host, $port); 
+		socket_write($socket, $message, strlen($message));
+		socket_close($socket);
+	}
+?>""")
+		print("Leech.php Generated!")
+	
+def serverSeek():
+	print(f"[ \033[93m*\033[0m ] > {host}\033[95m@\033[0m{port}] \033[92mReceiving updates..\033[0m")
+	s.listen(5)
+	try:
+		while True:
+			c, addr= s.accept()
+			data = c.recv(1024)
+			if data: 
+				if "STABLE" in data.decode("utf-8"):	print("[ \033[92m+\033[0m ] \033[92m" + data.decode("utf-8") + "\033[0m")
+				elif "WARNING" in data.decode("utf-8"):	print("[ \033[92m+\033[0m ] \033[93m" + data.decode("utf-8") + "\033[0m")
+				elif "CRITICAL" in data.decode("utf-8"):	print("[ \033[92m+\033[0m ] \033[91m" + data.decode("utf-8") + "\033[0m")
+				elif "ADMIN" in data.decode("utf-8"):	print("[ \033[92m+\033[0m ] \033[45m" + data.decode("utf-8") + "\033[0m")
+				else:
+					print("[ \033[92m+\033[0m ] \033[1m" + data.decode("utf-8") + "\033[0m")
+					if data.decode("utf-8") == "@exit":	exit()
+					elif data.decode("utf-8") == "@stop":	break
+			c.close()
+	except KeyboardInterrupt:
+		print("[ExceptionKey] serverSeek stopped!")
+	
+seekArr = {	
+					'clear':clearScreen,
+					'serverSeek':serverSeek,
+					'genLeech':genLeech
+				  }
+
+if __name__ == "__main__":
+	system("clear")
+	ascii_banner = pyfiglet.figlet_format("TRUTHSEEKER")
+	print("\033[95m" + ascii_banner + "\033[0m")
+	print(f"\033[95mTRUTHSEEKER FRAMEWORK - Panda {d_ver} ( main, {last_Update_date}, {last_Update_time} ) [ \033[5m{release_mode}\033[0m \033[95m]\033[0m")
+	print('\033[91mType "genLeech" to generate the Leech PHP  file. Run Truthseeker using "serverSeek".\033[0m')
+	
+	while(1):
+		try:
+			cmd = input(f'{a019_name}\033[95m@\033[0m{a019_ip} | {a019_mode} \033[93m$\033[0m ').split(' ')
+			seekArr[cmd[0]](*cmd[1:])
+			line_ind+=1;
+		except KeyError:
+			pass
+		except TypeError:
+			print("[ExceptionArg] Argument Error!")
+		except KeyboardInterrupt:
+			print("\n[ExceptionKey] Truthseeker end!")
+			exit()
